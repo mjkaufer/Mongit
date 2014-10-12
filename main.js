@@ -77,7 +77,9 @@ function postComment (parentId, message, callback) {
 	});
 }
 
-function insert(message, parentId, callback){//callback takes one arg, returns true or false whether or not it all worked out
+//the functions using parentId probaby won't use parentId for long, as it'll get deprecated when we dynamically find posts
+
+function insert(message, callback, parentId){//callback takes one arg, returns true or false whether or not it all worked out
 //we're going to have a static parentId right now - we'll make code to get a list of all parent id's later, but a parentId at the moment is like a table
 	try {
 		message = JSON.parse(JSON.stringify(message));//have to stringify to parse it - weird shtuff
@@ -95,7 +97,7 @@ function insert(message, parentId, callback){//callback takes one arg, returns t
 	postComment(parentId, message, callback);
 }
 
-function find(query, parentId, callback){//find all stuff - callback takes one arg, an array of all the comments
+function find(query, callback, parentId){//find all stuff - callback takes one arg, an array of all the comments
 		parentId = parentId || parentName;//set it to the default test thing if it doesn't work out
 		callback = callback || function(data){
 			console.log("Got data!");
