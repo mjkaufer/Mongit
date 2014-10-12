@@ -5,9 +5,15 @@ var request	= require('request')
 	, cookie;
 
 subredditName = "Mongit";
-parentName = "t3_2izkvt";//should be dynamic later, but this for now
+postId = "2izkvt";
+parentName = "t3_" + postId;//should be dynamic later, but this for now
+
 var loggedIn = false;
 
+function getCommentUrl(pid){//parent id
+	pid = pid || postId;
+	return "http://reddit.com/r/" + subredditName + "/comments/" + postId + "/db.json";
+}
 
 function login (callback) {
 	var options = {
@@ -80,12 +86,55 @@ function insert(message, parentId, callback){//callback takes one arg, returns t
 		console.log(message);
 		return;//we don't want to add to DB
 	}
+	message = JSON.stringify(message);
 
 	parentId = parentId || parentName;
 	callback = callback || function(){
-		console.log("Message " + message + " posted successfully");
+		console.log("Message " + JSON.stringify(message) + " posted successfully");
 	}
 	postComment(parentId, message, callback);
+}
+
+function find(parentId, callback){//find all stuff - callback takes one arg, an array of all the comments
+		parentId = parentId || parentName;//set it to the default test thing if it doesn't work out
+		callback = callback || function(data){
+			console.log("Got data!");
+			console.log(JSON.stringify(data));
+		}
+
+		var options = {
+			url	: getCommentUrl(),
+			headers	: {
+					'User-Agent' : 'Mongit/0.0.1 by mjkaufer',
+					'X-Modhash'	: modhash,
+					'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
+				},
+			method : 'GET'			
+		};
+
+	request(options, function (err, res, body) {
+		if (err) {
+			console.log(err.stack);
+			console.log('COMMENT POST ERROR ABOVE!');
+			callback(false);
+			return;
+		} else {//we're going to add all of the stuff into an array
+			// console.log(body);
+			body = JSON.parse(body);//have to jsonify it to access it
+			console.log(getCommentUrl())
+			var ret  = [];
+			// console.log(body);
+			bigCommentArrayThing = body[1].data.children;//comments - body[0] is post
+			console.log("---------");
+			console.log(bigCommentArrayThing);
+			for(var i = 0; i < bigCommentArrayThing.length; i++)
+				ret.push(bigCommentArrayThing[i].data.body);
+			
+
+			callback(ret);
+		}
+	});
+
 }
 
 
