@@ -132,7 +132,7 @@ function find(parentId, callback){//find all stuff - callback takes one arg, an 
 					JSON.parse(JSON.stringify(bigCommentArrayThing[i].data.body));//it'll throw an error if it's not a real JSON
 					var add = bigCommentArrayThing[i].data.body;
 					add._id = bigCommentArrayThing[i].data.id;//mongo-esque id maps
-					ret.push(bigCommentArrayThing[i].data.body);
+					ret.push(add);
 				} catch (e){}
 				
 			
