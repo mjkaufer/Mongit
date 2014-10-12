@@ -195,12 +195,10 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 	else if(!newval){
 		return console.log("You need something to update to!");
 	}
-	newval._id = query._id;
+	var id = query._id;
 	newval = JSON.stringify(newval);//so it can go in the post
-	console.log(newval);
-	var text = message
 	var options = {
-		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(newval) + '&thing_id=t1_' + newval._id,
+		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(newval) + '&thing_id=t1_' + id,
 		headers	: {
 				'User-Agent' : 'Mongit/0.0.1 by mjkaufer',
 				'X-Modhash'	: modhash,
@@ -219,6 +217,7 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 			// console.log('// COMMENT //');
 			// console.log("Your comment was posted successfully!");
 			// console.log('// ------- //');
+			console.log("Update completed!")
 			callback(true);
 		}
 	});
