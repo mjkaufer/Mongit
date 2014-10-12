@@ -36,5 +36,6 @@ Each entry in the database is actually a comment on a subreddit post. The databa
 * Mongo selectors & delimeters & stuff in the `find` method
 * Dynamic 'database' generation - find all posts and treat them as different DBs
 * Support for updates & deletes independent of `_id`s
+* Better, cleaner, API
 
 This was all made at a hackathon, so naturally it's not the most refined thing. It's also a proof of concept. 
