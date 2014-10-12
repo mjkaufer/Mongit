@@ -30,7 +30,6 @@ function login (callback) {
 			},
 			method : 'POST'
 	};
-
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log('LOGIN ERROR:');
@@ -68,7 +67,7 @@ function postComment (parentId, message, callback) {
 				},
 			method : 'POST'			
 		};
-
+	console.log("Making request");
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log(err.stack);
@@ -137,7 +136,7 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 				},
 			method : 'GET'			
 		};
-
+	console.log("Making request");
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log(err.stack);
@@ -223,7 +222,7 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 			},
 		method : 'POST'			
 	};
-
+	console.log("Making request");
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log(err.stack);
@@ -238,7 +237,6 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 }
 
 function del(query, callback){//only id based removing for now, so you'd need to pass something like {_id:123}
-
 	callback = callback || function(){};
 
 	if(!loggedIn){//log in and try again
@@ -271,7 +269,7 @@ function del(query, callback){//only id based removing for now, so you'd need to
 			},
 		method : 'POST'			
 	};
-
+	console.log("Making request");
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log(err.stack);
@@ -321,7 +319,6 @@ login(function(){
 			}
 
 		eval(cmd);
-		console.log("Working");
 
 		}
 	});

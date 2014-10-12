@@ -8,7 +8,7 @@ Mongit gives users a way to store data in the cloud without needing to purchase 
 
 All entries are encrypted with `AES256` encryption!
 
-**Note, unless you are legitimately insane, you should not use this in large, enterprise, production environments. It's more of a proof of concept.**
+**Note, unless you are legitimately insane, you should not use this in large, enterprise, production environments. Really, in any environments. It's more of a proof of concept.**
 
 ## Installation & Running
 
