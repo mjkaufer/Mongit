@@ -129,10 +129,16 @@ function find(parentId, callback){//find all stuff - callback takes one arg, an 
 			console.log(bigCommentArrayThing);
 			for(var i = 0; i < bigCommentArrayThing.length; i++)
 				try{
+
 					JSON.parse(JSON.stringify(bigCommentArrayThing[i].data.body));//it'll throw an error if it's not a real JSON
-					var add = bigCommentArrayThing[i].data.body;
-					add._id = bigCommentArrayThing[i].data.id;//mongo-esque id maps
-					ret.push(add);
+					bigCommentArrayThing[i].data.body.id = bigCommentArrayThing[i].data.id;
+					var thing = JSON.parse(bigCommentArrayThing[i].data.body);//no idea why we haad to do this but it didn't work otherwise
+					thing._id = bigCommentArrayThing[i].data.id;
+					// var arrAdd = bigCommentArrayThing[i].data.body;
+					// arrAdd["id"] = bigCommentArrayThing[i].data.id;//mongo-esque id maps
+					// console.log(arrAdd);
+					// console.log(bigCommentArrayThing[i].data.id);
+					ret.push(thing);
 				} catch (e){}
 				
 			
