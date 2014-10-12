@@ -95,12 +95,13 @@ function insert(message, parentId, callback){//callback takes one arg, returns t
 	postComment(parentId, message, callback);
 }
 
-function find(parentId, callback){//find all stuff - callback takes one arg, an array of all the comments
+function find(query, parentId, callback){//find all stuff - callback takes one arg, an array of all the comments
 		parentId = parentId || parentName;//set it to the default test thing if it doesn't work out
 		callback = callback || function(data){
 			console.log("Got data!");
 			console.log(JSON.stringify(data));
 		}
+		query = query || {};
 
 		var options = {
 			url	: getCommentUrl(),
@@ -134,6 +135,10 @@ function find(parentId, callback){//find all stuff - callback takes one arg, an 
 					bigCommentArrayThing[i].data.body.id = bigCommentArrayThing[i].data.id;
 					var thing = JSON.parse(bigCommentArrayThing[i].data.body);//no idea why we haad to do this but it didn't work otherwise
 					thing._id = bigCommentArrayThing[i].data.id;
+
+					if(!compare(thing, query)){//if the thing popped off doesn't match the query...
+						continue;//keep going & don't add to array
+					}
 					// var arrAdd = bigCommentArrayThing[i].data.body;
 					// arrAdd["id"] = bigCommentArrayThing[i].data.id;//mongo-esque id maps
 					// console.log(arrAdd);
@@ -146,6 +151,16 @@ function find(parentId, callback){//find all stuff - callback takes one arg, an 
 			callback(ret);
 		}
 	});
+
+}
+
+function compare(object, query){//basically, identify whether or not a query matches the object to decide whether to return it
+
+	for(var i in query){
+		if(object[i] != query[i])
+			return false;
+	}
+	return true;
 
 }
 
