@@ -69,9 +69,6 @@ function postComment (parentId, message, callback) {
 			callback(false);
 			return;
 		} else {
-			// console.log('// COMMENT //');
-			// console.log("Your comment was posted successfully!");
-			// console.log('// ------- //');
 			callback(true);
 		}
 	});
@@ -99,10 +96,7 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 
 function find(query, callback, parentId){//find all stuff - callback takes one arg, an array of all the comments
 		parentId = parentId || parentName;//set it to the default test thing if it doesn't work out
-		callback = callback || function(data){
-			console.log("Got data!");
-			console.log(JSON.stringify(data));
-		}
+		callback = callback || function(){};
 		query = query || {};
 
 		if(!loggedIn){//log in and try again
@@ -214,13 +208,62 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 			callback(false);
 			return;
 		} else {
-			// console.log('// COMMENT //');
-			// console.log("Your comment was posted successfully!");
-			// console.log('// ------- //');
 			console.log("Update completed!")
 			callback(true);
 		}
 	});
+}
+
+function del(query, callback){//only id based removing for now, so you'd need to pass something like {_id:123}
+
+	callback = callback || function(){};
+
+	if(!loggedIn){//log in and try again
+		return login(function(){
+			delete(query, callback);
+		});
+	}
+
+	if(!query){
+		return console.log("You need a query!");
+	}
+	else if(!query._id){
+		return console.log("Please specify the _id to delete!");
+	}
+
+	try {
+		query = JSON.parse(JSON.stringify(query));//have to stringify to parse it - weird shtuff
+	} catch (exception) {
+		return console.log("Error: " + query + " is not a valid JSON!");
+	}
+
+	var id = query._id;
+
+	var options = {
+		url	: 'https://en.reddit.com/api/del?id=t1_' + id,
+		headers	: {
+				'User-Agent' : 'Mongit/0.0.1 by mjkaufer',
+				'X-Modhash'	: modhash,
+				'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
+			},
+		method : 'POST'			
+	};
+
+	request(options, function (err, res, body) {
+		if (err) {
+			console.log(err.stack);
+			console.log('COMMENT DELETE ERROR ABOVE!');
+			callback(false);
+			return;
+		} else {
+			console.log("Delete completed!")
+			callback(true);
+		}
+	});
+
+
+
+
 }
 
 function compare(object, query){//basically, identify whether or not a query matches the object to decide whether to return it
