@@ -26,7 +26,7 @@ function login (callback) {
 	var options = {
 			url	: 'https://ssl.reddit.com/api/login?api_type=json&user=' + argv.user + '&passwd=' + argv.pass + '&rem=True',
 			headers : {
-				'User-Agent' : 'Mongit/0.0.1 by mjkaufer',
+				'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
 			},
 			method : 'POST'
 	};
@@ -61,7 +61,7 @@ function postComment (parentId, message, callback) {
 		, options = {
 			url	: 'https://en.reddit.com/api/comment?api_type=json&text=' + encodeURIComponent(text) + '&thing_id=' + parentId,
 			headers	: {
-					'User-Agent' : 'Mongit/0.0.1 by mjkaufer',
+					'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
 					'X-Modhash'	: modhash,
 					'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
 				},
@@ -130,7 +130,7 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 		var options = {
 			url	: getCommentUrl(),
 			headers	: {
-					'User-Agent' : 'Mongit/0.0.1 by mjkaufer',
+					'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
 					'X-Modhash'	: modhash,
 					'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
 				},
@@ -216,7 +216,7 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 	var options = {
 		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(encrypt(newval)) + '&thing_id=t1_' + id,
 		headers	: {
-				'User-Agent' : 'Mongit/0.0.1 by mjkaufer',
+				'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
 				'X-Modhash'	: modhash,
 				'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
 			},
@@ -263,7 +263,7 @@ function del(query, callback){//only id based removing for now, so you'd need to
 	var options = {
 		url	: 'https://en.reddit.com/api/del?id=t1_' + id,
 		headers	: {
-				'User-Agent' : 'Mongit/0.0.1 by mjkaufer',
+				'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
 				'X-Modhash'	: modhash,
 				'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
 			},

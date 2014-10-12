@@ -1,6 +1,6 @@
 {
   "name": "mongit",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Mongo-esque Reddit-based Database!",
   "main": "main.js",
   "scripts": {
