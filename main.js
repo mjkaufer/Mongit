@@ -1,12 +1,16 @@
 var request	= require('request')
 	, argv	= require('yargs').argv
 	, repl = require('repl')
+	, crypto = require('crypto')
 	, modhash
 	, cookie;
 
 subredditName = "Mongit";
 postId = "2izkvt";
 parentName = "t3_" + postId;//should be dynamic later, but this for now
+algo = "aes256";
+key = "YouShouldDefineThisKey" + argv.user + ":" + argv.pass;//this shouldn't change after you first run it for obvious reasons
+
 
 var loggedIn = false;
 
@@ -96,7 +100,9 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 
 function find(query, callback, parentId){//find all stuff - callback takes one arg, an array of all the comments
 		parentId = parentId || parentName;//set it to the default test thing if it doesn't work out
-		callback = callback || function(){};
+		callback = callback || function(ret){
+			console.log(ret);
+		};
 		query = query || {};
 
 		if(!loggedIn){//log in and try again
@@ -129,7 +135,6 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 			// console.log(body);
 			bigCommentArrayThing = body[1].data.children;//comments - body[0] is post
 			console.log("---------");
-			console.log(bigCommentArrayThing);
 			for(var i = 0; i < bigCommentArrayThing.length; i++)
 				try{
 
