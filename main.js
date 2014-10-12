@@ -12,6 +12,9 @@ algo = "aes256";
 key = "YouShouldDefineThisKey" + argv.user + ":" + argv.pass;//this shouldn't change after you first run it for obvious reasons
 
 
+cipher = crypto.createCipher(algo, key);  
+decipher = crypto.createDecipher(algo, key);
+
 var loggedIn = false;
 
 function getCommentUrl(pid){//parent id
@@ -97,6 +100,18 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 	}
 	postComment(parentId, message, callback);
 }
+
+function decrypt(encrypted){
+	return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
+}
+function encrypt(text){
+	if(typeof text == "object")
+		text = JSON.stringify(text);//has to be a string
+
+	return cipher.update(text, 'utf8', 'hex') + cipher.final('hex');	
+}
+
+
 
 function find(query, callback, parentId){//find all stuff - callback takes one arg, an array of all the comments
 		parentId = parentId || parentName;//set it to the default test thing if it doesn't work out
