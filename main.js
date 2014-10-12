@@ -179,7 +179,9 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 function update (query, newval, callback, parentId) {//query = thing to find by, newval = what to set to - because we're lazy, we'll make it require an _id for now
 	
 	parentId = parentId || postId;
-	callback = callback || function(){};
+	callback = callback || function(){
+		console.log("Updated successfuly!")
+	};
 
 
 	if(!loggedIn){//log in and try again
@@ -236,11 +238,13 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 
 function del(query, callback){//only id based removing for now, so you'd need to pass something like {_id:123}
 
-	callback = callback || function(){};
+	callback = callback || function(){
+		console.log("Deleted successfully!")
+	};
 
 	if(!loggedIn){//log in and try again
 		return login(function(){
-			delete(query, callback);
+			del(query, callback);
 		});
 	}
 
