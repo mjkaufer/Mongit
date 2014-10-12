@@ -96,7 +96,7 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 	message = encrypt(JSON.stringify(message));
 
 	parentId = parentId || parentName;
-	
+
 	callback = callback || function(){
 		console.log("Message " + orig + " posted and encrypted successfully");
 	}
@@ -154,20 +154,20 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 			console.log("---------");
 			for(var i = 0; i < bigCommentArrayThing.length; i++)
 				try{
+					var decrypted = JSON.parse(decrypt(bigCommentArrayThing[i].data.body));//set decrypted to a parsed json from the encrypted string
+					JSON.parse(JSON.stringify(decrypted));//it'll throw an error if it's not a real JSON
+					decrypted._id = bigCommentArrayThing[i].data.id;
+					// var thing = JSON.parse(bigCommentArrayThing[i].data.body);//no idea why we haad to do this but it didn't work otherwise
+					// thing._id = bigCommentArrayThing[i].data.id;
 
-					JSON.parse(JSON.stringify(bigCommentArrayThing[i].data.body));//it'll throw an error if it's not a real JSON
-					bigCommentArrayThing[i].data.body.id = bigCommentArrayThing[i].data.id;
-					var thing = JSON.parse(bigCommentArrayThing[i].data.body);//no idea why we haad to do this but it didn't work otherwise
-					thing._id = bigCommentArrayThing[i].data.id;
-
-					if(!compare(thing, query)){//if the thing popped off doesn't match the query...
+					if(!compare(decrypted, query)){//if the thing popped off doesn't match the query...
 						continue;//keep going & don't add to array
 					}
 					// var arrAdd = bigCommentArrayThing[i].data.body;
 					// arrAdd["id"] = bigCommentArrayThing[i].data.id;//mongo-esque id maps
 					// console.log(arrAdd);
 					// console.log(bigCommentArrayThing[i].data.id);
-					ret.push(thing);
+					ret.push(decrypted);
 				} catch (e){}
 				
 			
