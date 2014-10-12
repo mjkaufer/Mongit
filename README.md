@@ -6,6 +6,8 @@ Mongo-esque Reddit-based Database!
 
 Mongit gives users a way to store data in the cloud without needing to purchase and setup a database. Just use Reddit!
 
+All entries are encrypted with `AES256` encryption!
+
 **Note, unless you are legitimately insane, you should not use this in large, enterprise, production environments. It's more of a proof of concept.**
 
 ## Installation & Running
@@ -32,7 +34,6 @@ Each entry in the database is actually a comment on a subreddit post. The databa
 
 * Support to easily make multiple 'databases', which are basically just posts in the subreddit
 * Mongo selectors & delimeters & stuff in the `find` method
-* Encryption
 * Dynamic 'database' generation - find all posts and treat them as different DBs
 * Support for updates & deletes independent of `_id`s
 

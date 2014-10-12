@@ -159,7 +159,6 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 					decrypted._id = bigCommentArrayThing[i].data.id;
 					// var thing = JSON.parse(bigCommentArrayThing[i].data.body);//no idea why we haad to do this but it didn't work otherwise
 					// thing._id = bigCommentArrayThing[i].data.id;
-
 					if(!compare(decrypted, query)){//if the thing popped off doesn't match the query...
 						continue;//keep going & don't add to array
 					}
@@ -216,7 +215,7 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 	var id = query._id;
 	newval = JSON.stringify(newval);//so it can go in the post
 	var options = {
-		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(newval) + '&thing_id=t1_' + id,
+		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(encrypt(newval)) + '&thing_id=t1_' + id,
 		headers	: {
 				'User-Agent' : 'Mongit/0.0.1 by mjkaufer',
 				'X-Modhash'	: modhash,
