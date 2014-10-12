@@ -92,11 +92,13 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 		console.log(message);
 		return;//we don't want to add to DB
 	}
-	message = JSON.stringify(message);
+	var orig = JSON.stringify(message);
+	message = encrypt(JSON.stringify(message));
 
 	parentId = parentId || parentName;
+	
 	callback = callback || function(){
-		console.log("Message " + JSON.stringify(message) + " posted successfully");
+		console.log("Message " + orig + " posted and encrypted successfully");
 	}
 	postComment(parentId, message, callback);
 }
@@ -238,9 +240,7 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 
 function del(query, callback){//only id based removing for now, so you'd need to pass something like {_id:123}
 
-	callback = callback || function(){
-		console.log("Deleted successfully!")
-	};
+	callback = callback || function(){};
 
 	if(!loggedIn){//log in and try again
 		return login(function(){
