@@ -9,11 +9,7 @@ subredditName = "Mongit";
 postId = "2izkvt";
 parentName = "t3_" + postId;//should be dynamic later, but this for now
 algo = "aes256";
-key = "YouShouldDefineThisKey" + argv.user + ":" + argv.pass;//this shouldn't change after you first run it for obvious reasons
-
-
-cipher = crypto.createCipher(algo, key);  
-decipher = crypto.createDecipher(algo, key);
+key = "RazzeFrazzle";//this shouldn't change after you first run it for obvious reasons
 
 var loggedIn = false;
 
@@ -101,14 +97,16 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 	}
 	postComment(parentId, message, callback);
 }
-
+//we have to declare decipher and cipher here because the .final thing means we can't use it or some shit
 function decrypt(encrypted){
+	var decipher = crypto.createDecipher(algo, key);
 	return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
 }
 function encrypt(text){
 	if(typeof text == "object")
 		text = JSON.stringify(text);//has to be a string
 
+	cipher = crypto.createCipher(algo, key);
 	return cipher.update(text, 'utf8', 'hex') + cipher.final('hex');	
 }
 
@@ -140,7 +138,7 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log(err.stack);
-			console.log('COMMENT POST ERROR ABOVE!');
+			console.log('COMMENT FIND ERROR ABOVE!');
 			callback(false);
 			return;
 		} else {//we're going to add all of the stuff into an array
@@ -303,7 +301,9 @@ function compare(object, query){//basically, identify whether or not a query mat
 
 login(function(){
 	console.log("Starting mongit console");
-
+	// for(var i = 0; i < twitterInsert.length; i++){
+	// 	insert(twitterInsert[i]);
+	// }
 	repl.start({
 		prompt: "Mongit> ",
 		input: process.stdin,
@@ -326,5 +326,267 @@ login(function(){
 
 
 
-
+twitterInsert = [//random hackru twitter query to store
+  {
+    "created_at": "Sun Oct 12 12:22:51 +0000 2014",
+    "id": 521274800766222340,
+    "id_str": "521274800766222336",
+    "text": "Breakfast is being served!",
+    "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+    "truncated": false,
+    "in_reply_to_status_id": null,
+    "in_reply_to_status_id_str": null,
+    "in_reply_to_user_id": null,
+    "in_reply_to_user_id_str": null,
+    "in_reply_to_screen_name": null,
+    "user": {
+      "id": 244296954,
+      "id_str": "244296954",
+      "name": "HackRU",
+      "screen_name": "theHackRU",
+      "location": "Rutgers University",
+      "description": "An incredible experience for learning and creation! · October 11-12th 2014 · #RUready?",
+      "url": "http://t.co/k6jHNYlJaT",
+      "entities": {
+        "url": {
+          "urls": [
+            {
+              "url": "http://t.co/k6jHNYlJaT",
+              "expanded_url": "http://hackru.org",
+              "display_url": "hackru.org",
+              "indices": [
+                0,
+                22
+              ]
+            }
+          ]
+        },
+        "description": {
+          "urls": []
+        }
+      },
+      "protected": false,
+      "followers_count": 1103,
+      "friends_count": 121,
+      "listed_count": 26,
+      "created_at": "Sat Jan 29 00:27:12 +0000 2011",
+      "favourites_count": 567,
+      "utc_offset": -18000,
+      "time_zone": "Quito",
+      "geo_enabled": true,
+      "verified": false,
+      "statuses_count": 766,
+      "lang": "en",
+      "contributors_enabled": false,
+      "is_translator": false,
+      "is_translation_enabled": false,
+      "profile_background_color": "131516",
+      "profile_background_image_url": "http://pbs.twimg.com/profile_background_images/378800000182792718/ncF6BahY.png",
+      "profile_background_image_url_https": "https://pbs.twimg.com/profile_background_images/378800000182792718/ncF6BahY.png",
+      "profile_background_tile": true,
+      "profile_image_url": "http://pbs.twimg.com/profile_images/509142658716286976/5h1CGBZk_normal.jpeg",
+      "profile_image_url_https": "https://pbs.twimg.com/profile_images/509142658716286976/5h1CGBZk_normal.jpeg",
+      "profile_banner_url": "https://pbs.twimg.com/profile_banners/244296954/1410224044",
+      "profile_link_color": "D21033",
+      "profile_sidebar_border_color": "000000",
+      "profile_sidebar_fill_color": "FFFFFF",
+      "profile_text_color": "666666",
+      "profile_use_background_image": true,
+      "default_profile": false,
+      "default_profile_image": false,
+      "following": true,
+      "follow_request_sent": false,
+      "notifications": false
+    },
+    "geo": null,
+    "coordinates": null,
+    "place": null,
+    "contributors": null,
+    "retweet_count": 0,
+    "favorite_count": 0,
+    "entities": {
+      "hashtags": [],
+      "symbols": [],
+      "urls": [],
+      "user_mentions": []
+    },
+    "favorited": false,
+    "retweeted": false,
+    "lang": "en"
+  },
+  {
+    "created_at": "Sun Oct 12 11:50:57 +0000 2014",
+    "id": 521266770200776700,
+    "id_str": "521266770200776704",
+    "text": "Breakfast will be happening around 8:30, hang in there! We'll make announcements by table when it's ready.",
+    "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+    "truncated": false,
+    "in_reply_to_status_id": null,
+    "in_reply_to_status_id_str": null,
+    "in_reply_to_user_id": null,
+    "in_reply_to_user_id_str": null,
+    "in_reply_to_screen_name": null,
+    "user": {
+      "id": 244296954,
+      "id_str": "244296954",
+      "name": "HackRU",
+      "screen_name": "theHackRU",
+      "location": "Rutgers University",
+      "description": "An incredible experience for learning and creation! · October 11-12th 2014 · #RUready?",
+      "url": "http://t.co/k6jHNYlJaT",
+      "entities": {
+        "url": {
+          "urls": [
+            {
+              "url": "http://t.co/k6jHNYlJaT",
+              "expanded_url": "http://hackru.org",
+              "display_url": "hackru.org",
+              "indices": [
+                0,
+                22
+              ]
+            }
+          ]
+        },
+        "description": {
+          "urls": []
+        }
+      },
+      "protected": false,
+      "followers_count": 1103,
+      "friends_count": 121,
+      "listed_count": 26,
+      "created_at": "Sat Jan 29 00:27:12 +0000 2011",
+      "favourites_count": 567,
+      "utc_offset": -18000,
+      "time_zone": "Quito",
+      "geo_enabled": true,
+      "verified": false,
+      "statuses_count": 766,
+      "lang": "en",
+      "contributors_enabled": false,
+      "is_translator": false,
+      "is_translation_enabled": false,
+      "profile_background_color": "131516",
+      "profile_background_image_url": "http://pbs.twimg.com/profile_background_images/378800000182792718/ncF6BahY.png",
+      "profile_background_image_url_https": "https://pbs.twimg.com/profile_background_images/378800000182792718/ncF6BahY.png",
+      "profile_background_tile": true,
+      "profile_image_url": "http://pbs.twimg.com/profile_images/509142658716286976/5h1CGBZk_normal.jpeg",
+      "profile_image_url_https": "https://pbs.twimg.com/profile_images/509142658716286976/5h1CGBZk_normal.jpeg",
+      "profile_banner_url": "https://pbs.twimg.com/profile_banners/244296954/1410224044",
+      "profile_link_color": "D21033",
+      "profile_sidebar_border_color": "000000",
+      "profile_sidebar_fill_color": "FFFFFF",
+      "profile_text_color": "666666",
+      "profile_use_background_image": true,
+      "default_profile": false,
+      "default_profile_image": false,
+      "following": true,
+      "follow_request_sent": false,
+      "notifications": false
+    },
+    "geo": null,
+    "coordinates": null,
+    "place": null,
+    "contributors": null,
+    "retweet_count": 1,
+    "favorite_count": 0,
+    "entities": {
+      "hashtags": [],
+      "symbols": [],
+      "urls": [],
+      "user_mentions": []
+    },
+    "favorited": false,
+    "retweeted": false,
+    "lang": "en"
+  },
+  {
+    "created_at": "Sun Oct 12 11:46:51 +0000 2014",
+    "id": 521265737218793500,
+    "id_str": "521265737218793473",
+    "text": "Correction: hacking ends at 12PM! KEEP GOING!!",
+    "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+    "truncated": false,
+    "in_reply_to_status_id": null,
+    "in_reply_to_status_id_str": null,
+    "in_reply_to_user_id": null,
+    "in_reply_to_user_id_str": null,
+    "in_reply_to_screen_name": null,
+    "user": {
+      "id": 244296954,
+      "id_str": "244296954",
+      "name": "HackRU",
+      "screen_name": "theHackRU",
+      "location": "Rutgers University",
+      "description": "An incredible experience for learning and creation! · October 11-12th 2014 · #RUready?",
+      "url": "http://t.co/k6jHNYlJaT",
+      "entities": {
+        "url": {
+          "urls": [
+            {
+              "url": "http://t.co/k6jHNYlJaT",
+              "expanded_url": "http://hackru.org",
+              "display_url": "hackru.org",
+              "indices": [
+                0,
+                22
+              ]
+            }
+          ]
+        },
+        "description": {
+          "urls": []
+        }
+      },
+      "protected": false,
+      "followers_count": 1103,
+      "friends_count": 121,
+      "listed_count": 26,
+      "created_at": "Sat Jan 29 00:27:12 +0000 2011",
+      "favourites_count": 567,
+      "utc_offset": -18000,
+      "time_zone": "Quito",
+      "geo_enabled": true,
+      "verified": false,
+      "statuses_count": 766,
+      "lang": "en",
+      "contributors_enabled": false,
+      "is_translator": false,
+      "is_translation_enabled": false,
+      "profile_background_color": "131516",
+      "profile_background_image_url": "http://pbs.twimg.com/profile_background_images/378800000182792718/ncF6BahY.png",
+      "profile_background_image_url_https": "https://pbs.twimg.com/profile_background_images/378800000182792718/ncF6BahY.png",
+      "profile_background_tile": true,
+      "profile_image_url": "http://pbs.twimg.com/profile_images/509142658716286976/5h1CGBZk_normal.jpeg",
+      "profile_image_url_https": "https://pbs.twimg.com/profile_images/509142658716286976/5h1CGBZk_normal.jpeg",
+      "profile_banner_url": "https://pbs.twimg.com/profile_banners/244296954/1410224044",
+      "profile_link_color": "D21033",
+      "profile_sidebar_border_color": "000000",
+      "profile_sidebar_fill_color": "FFFFFF",
+      "profile_text_color": "666666",
+      "profile_use_background_image": true,
+      "default_profile": false,
+      "default_profile_image": false,
+      "following": true,
+      "follow_request_sent": false,
+      "notifications": false
+    },
+    "geo": null,
+    "coordinates": null,
+    "place": null,
+    "contributors": null,
+    "retweet_count": 0,
+    "favorite_count": 1,
+    "entities": {
+      "hashtags": [],
+      "symbols": [],
+      "urls": [],
+      "user_mentions": []
+    },
+    "favorited": false,
+    "retweeted": false,
+    "lang": "en"
+  }
+];
 
