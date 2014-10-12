@@ -105,6 +105,12 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 		}
 		query = query || {};
 
+		if(!loggedIn){//log in and try again
+			return login(function(){
+				find(query, callback, parentId);
+			});
+		}
+
 		var options = {
 			url	: getCommentUrl(),
 			headers	: {
@@ -154,6 +160,68 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 		}
 	});
 
+}
+
+function update (query, newval, callback, parentId) {//query = thing to find by, newval = what to set to - because we're lazy, we'll make it require an _id for now
+	
+	parentId = parentId || postId;
+	callback = callback || function(){};
+
+
+	if(!loggedIn){//log in and try again
+		return login(function(){
+			update(query, newval, parentId, callback);
+		});
+	}
+
+	try {
+		query = JSON.parse(JSON.stringify(query));//have to stringify to parse it - weird shtuff
+	} catch (exception) {
+		return console.log("Error: " + query + " is not a valid JSON!");
+	}
+
+	try {
+		newval = JSON.parse(JSON.stringify(newval));//have to stringify to parse it - weird shtuff
+	} catch (exception) {
+		return console.log("Error: " + newval + " is not a valid JSON!");
+	}
+
+	if(!query){
+		return console.log("You need a query!");
+	}
+	else if(!query._id){//no _id is defined - we're going to require the _id for now to make life easier and do less requests
+		return console.log("Please specify the _id to update!");
+	}
+	else if(!newval){
+		return console.log("You need something to update to!");
+	}
+	newval._id = query._id;
+	newval = JSON.stringify(newval);//so it can go in the post
+	console.log(newval);
+	var text = message
+	var options = {
+		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(newval) + '&thing_id=t1_' + newval._id,
+		headers	: {
+				'User-Agent' : 'Mongit/0.0.1 by mjkaufer',
+				'X-Modhash'	: modhash,
+				'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
+			},
+		method : 'POST'			
+	};
+
+	request(options, function (err, res, body) {
+		if (err) {
+			console.log(err.stack);
+			console.log('COMMENT POST ERROR ABOVE!');
+			callback(false);
+			return;
+		} else {
+			// console.log('// COMMENT //');
+			// console.log("Your comment was posted successfully!");
+			// console.log('// ------- //');
+			callback(true);
+		}
+	});
 }
 
 function compare(object, query){//basically, identify whether or not a query matches the object to decide whether to return it
