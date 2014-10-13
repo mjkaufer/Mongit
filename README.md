@@ -30,6 +30,13 @@ Currently, all usage is done in the REPL, but you can easily see the methods bei
 
 Each entry in the database is actually a comment on a subreddit post. The database is just a post in a subreddit. Using Reddit's API, you grab the comments, parse them as a JSON, and return them!
 
+## Awards
+
+Mongit was created at HackRU Fall 2014, and won a bunch of stuff there.
+* 2nd Place Overall
+* Favorite Yodle Hack
+* Best use of Internet, from BookHolders
+
 ## Todo
 
 * Support to easily make multiple 'databases', which are basically just posts in the subreddit
