@@ -6,13 +6,13 @@ Mongo-esque Reddit-based Database!
 
 Mongit gives users a way to store data in the cloud without needing to purchase and setup a database. Just use Reddit!
 
-All entries are encrypted with `AES256` encryption!
+All entries are encrypted with `AES256` bit encryption!
 
 **Note, unless you are legitimately insane, you should not use this in large, enterprise, production environments. Really, in any environments. It's more of a proof of concept.**
 
 ## Installation & Running
 
-Install using `npm install`. You'll need a subreddit and a post in that subreddit. Substitute the subreddit name into the variable `subredditName` and the id of the post into `postId`. Then, to run the console, type in `node main.js --user $redditUsername --pass $redditPassword`. You might want to make it so that your subreddit only allows moderators to post, so nobody can 'inject' data into your server.
+Install using `npm install`. You'll need a subreddit and a post in that subreddit. Substitute the subreddit name into the variable `subredditName` and the id of the post into the variable `postId`. Then, to run the console, type in `node main.js --user $redditUsername --pass $redditPassword`. You might want to make it so that your subreddit only allows moderators to post, so nobody can 'inject' data into your server.
 
 ## Usage
 
@@ -40,9 +40,9 @@ Mongit was created at HackRU Fall 2014, and won a bunch of stuff there.
 ## Todo
 
 * Support to easily make multiple 'databases', which are basically just posts in the subreddit
-* Mongo selectors & delimeters & stuff in the `find` method
+* Mongo selectors & delimeters & stuff, such as `$gt` in the `find` method
 * Dynamic 'database' generation - find all posts and treat them as different DBs
-* Support for updates & deletes independent of `_id`s
+* Support for updates & deletes independent of `_id`s, e.g. `del({name:"abc"})` instead of needing `_id`s.
 * Better, cleaner, API
 
 This was all made at a hackathon, so naturally it's not the most refined thing. It's also a proof of concept. 
