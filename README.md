@@ -45,4 +45,8 @@ Mongit was created at HackRU Fall 2014, and won a bunch of stuff there.
 * Support for updates & deletes independent of `_id`s, e.g. `del({name:"abc"})` instead of needing `_id`s.
 * Better, cleaner, API
 
+## Questions?
+
+Make an issue or email me at `mjkaufer@gmail.com`. Happy hacking!
+
 This was all made at a hackathon, so naturally it's not the most refined thing. It's also a proof of concept. 
