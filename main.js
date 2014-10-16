@@ -174,6 +174,8 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 
 }
 
+
+
 function update (query, newval, callback, parentId) {//query = thing to find by, newval = what to set to - because we're lazy, we'll make it require an _id for now
 	
 	parentId = parentId || postId;
@@ -203,13 +205,61 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 	if(!query){
 		return console.log("You need a query!");
 	}
-	else if(!query._id){//no _id is defined - we're going to require the _id for now to make life easier and do less requests
+	// else if(!query._id){//no _id is defined - we're going to require the _id for now to make life easier and do less requests
+	// 	return console.log("Please specify the _id to update!");
+	// }
+	else if(!newval){
+		return console.log("You need something to update to!");
+	}
+	
+	
+	find(query, function(data){//because it's find(query), only the data conforming to the query is returned and edited
+		for(var i = 0; i < data.length; i++){
+			var edit = data[i];//row thing we're editing
+			var id = edit._id;
+			
+			for(var key in newval){//each of the keys we're updating
+				edit[key] = newval[key];//we'll add fancy mongo methods later
+			}
+			delete edit._id;//we don't want the id when we put it back in			
+			console.log(edit);
+			updateById(id, edit)
+			//now edit's keys are updated and we can update
+		}
+	});
+
+}
+
+
+function updateById (id, newval, callback, parentId) {//query = thing to find by, newval = what to set to - because we're lazy, we'll make it require an _id for now
+	
+	parentId = parentId || postId;
+	callback = callback || function(){
+		console.log("Updated successfuly!")
+	};
+
+
+	if(!loggedIn){//log in and try again
+		return login(function(){
+			update(query, newval, parentId, callback);
+		});
+	}
+
+	try {
+		newval = JSON.parse(JSON.stringify(newval));//have to stringify to parse it - weird shtuff
+	} catch (exception) {
+		return console.log("Error: " + newval + " is not a valid JSON!");
+	}
+
+	if(!id){//no _id is defined - we're going to require the _id for now to make life easier and do less requests
 		return console.log("Please specify the _id to update!");
 	}
 	else if(!newval){
 		return console.log("You need something to update to!");
 	}
-	var id = query._id;
+	
+	delete newval._id;
+	
 	newval = JSON.stringify(newval);//so it can go in the post
 	var options = {
 		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(encrypt(newval)) + '&thing_id=t1_' + id,
