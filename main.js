@@ -212,8 +212,10 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 		return console.log("You need something to update to!");
 	}
 	
-	
+	var completed = 0;
+	var failed = 0;
 	find(query, function(data){//because it's find(query), only the data conforming to the query is returned and edited
+		
 		for(var i = 0; i < data.length; i++){
 			var edit = data[i];//row thing we're editing
 			var id = edit._id;
@@ -223,7 +225,14 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 			}
 			delete edit._id;//we don't want the id when we put it back in			
 			console.log(edit);
-			updateById(id, edit)
+			updateById(id, edit, function(success){
+				completed++;
+				if(!success)//there was some problem
+					failed++;
+				if(completed==data.length){
+					console.log("Done - " + failed + " failed.");
+				}
+			})
 			//now edit's keys are updated and we can update
 		}
 	});
@@ -258,7 +267,7 @@ function updateById (id, newval, callback, parentId) {//query = thing to find by
 		return console.log("You need something to update to!");
 	}
 	
-	delete newval._id;
+	delete newval._id;//make sure _id's aren't injected...
 	
 	newval = JSON.stringify(newval);//so it can go in the post
 	var options = {
@@ -278,26 +287,22 @@ function updateById (id, newval, callback, parentId) {//query = thing to find by
 			callback(false);
 			return;
 		} else {
-			console.log("Update completed!")
 			callback(true);
 		}
 	});
 }
 
-function del(query, callback){//only id based removing for now, so you'd need to pass something like {_id:123}
+function remove(query, callback){//only id based removing for now, so you'd need to pass something like {_id:123}
 	callback = callback || function(){};
 
 	if(!loggedIn){//log in and try again
 		return login(function(){
-			del(query, callback);
+			remove(query, callback);
 		});
 	}
 
 	if(!query){
 		return console.log("You need a query!");
-	}
-	else if(!query._id){
-		return console.log("Please specify the _id to delete!");
 	}
 
 	try {
@@ -305,8 +310,35 @@ function del(query, callback){//only id based removing for now, so you'd need to
 	} catch (exception) {
 		return console.log("Error: " + query + " is not a valid JSON!");
 	}
+	var completed = 0;
+	var failed = 0;
+	find(query, function(data){//because it's find(query), only the data conforming to the query is returned and edited
+		for(var i = 0; i < data.length; i++){
+			var del = data[i];//row thing we're editing
+			removeById(del._id, function(success){
+				completed++;
+				if(!success)//there was some problem
+					failed++;
+				if(completed==data.length){
+					console.log("Done - " + failed + " failed.");
+				}
+			})
+		}
+	});
+}
 
-	var id = query._id;
+function removeById(id, callback){//only id based removing for now, so you'd need to pass something like {_id:123}
+	callback = callback || function(){};
+
+	if(!loggedIn){//log in and try again
+		return login(function(){
+			remove(query, callback);
+		});
+	}
+
+	if(!id){
+		return console.log("You need an id!");
+	}
 
 	var options = {
 		url	: 'https://en.reddit.com/api/del?id=t1_' + id,
@@ -317,7 +349,7 @@ function del(query, callback){//only id based removing for now, so you'd need to
 			},
 		method : 'POST'			
 	};
-	console.log("Making request");
+
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log(err.stack);
@@ -325,15 +357,12 @@ function del(query, callback){//only id based removing for now, so you'd need to
 			callback(false);
 			return;
 		} else {
-			console.log("Delete completed!")
 			callback(true);
 		}
 	});
-
-
-
-
 }
+
+
 
 function compare(object, query){//basically, identify whether or not a query matches the object to decide whether to return it
 
