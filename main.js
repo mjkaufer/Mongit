@@ -224,7 +224,6 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 				edit[key] = newval[key];//we'll add fancy mongo methods later
 			}
 			delete edit._id;//we don't want the id when we put it back in			
-			console.log(edit);
 			updateById(id, edit, function(success){
 				completed++;
 				if(!success)//there was some problem
@@ -244,7 +243,7 @@ function updateById (id, newval, callback, parentId) {//query = thing to find by
 	
 	parentId = parentId || postId;
 	callback = callback || function(){
-		console.log("Updated successfuly!")
+		
 	};
 
 
