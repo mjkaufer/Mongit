@@ -42,7 +42,6 @@ Mongit was created at HackRU Fall 2014, and won a bunch of stuff there.
 * Support to easily make multiple 'databases', which are basically just posts in the subreddit
 * Mongo selectors & delimeters & stuff, such as `$gt` in the `find` method
 * Dynamic 'database' generation - find all posts and treat them as different DBs
-* Better, cleaner, API
 
 ## Questions?
 
