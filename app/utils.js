@@ -11,3 +11,13 @@ exports.encrypt = function(text){
   cipher = crypto.createCipher(config.algo, config.key);
   return cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
 }
+
+exports.compare = function(object, query){//basically, identify whether or not a query matches the object to decide whether to return it
+
+  for(var i in query){
+    if(object[i] != query[i])
+      return false;
+    }
+    return true;
+
+}

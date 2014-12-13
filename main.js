@@ -139,7 +139,7 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 					decrypted._id = bigCommentArrayThing[i].data.id;
 					// var thing = JSON.parse(bigCommentArrayThing[i].data.body);//no idea why we haad to do this but it didn't work otherwise
 					// thing._id = bigCommentArrayThing[i].data.id;
-					if(!compare(decrypted, query)){//if the thing popped off doesn't match the query...
+					if(!utils.compare(decrypted, query)){//if the thing popped off doesn't match the query...
 						continue;//keep going & don't add to array
 					}
 					// var arrAdd = bigCommentArrayThing[i].data.body;
@@ -343,20 +343,6 @@ function removeById(id, callback){//only id based removing for now, so you'd nee
 		}
 	});
 }
-
-
-
-function compare(object, query){//basically, identify whether or not a query matches the object to decide whether to return it
-
-	for(var i in query){
-		if(object[i] != query[i])
-			return false;
-	}
-	return true;
-
-}
-
-
 
 //2izkvt
 
