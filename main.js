@@ -3,6 +3,7 @@ var request	= require('request')
 	, repl = require('repl')
 	, crypto = require('crypto')
 	, config = require('./config/settings')
+	, encryption = require('./app/encryption')
 	, modhash
 	, cookie;
 
@@ -83,7 +84,7 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 		return;//we don't want to add to DB
 	}
 	var orig = JSON.stringify(message);
-	message = encrypt(JSON.stringify(message));
+	message = encryption.encrypt(JSON.stringify(message));
 
 	parentId = parentId || config.parentName;
 
@@ -92,20 +93,6 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 	}
 	postComment(parentId, message, callback);
 }
-//we have to declare decipher and cipher here because the .final thing means we can't use it or some shit
-function decrypt(encrypted){
-	var decipher = crypto.createDecipher(config.algo, config.key);
-	return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
-}
-function encrypt(text){
-	if(typeof text == "object")
-		text = JSON.stringify(text);//has to be a string
-
-	cipher = crypto.createCipher(config.algo, config.key);
-	return cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
-}
-
-
 
 function find(query, callback, parentId){//find all stuff - callback takes one arg, an array of all the comments
 		parentId = parentId || config.parentName;//set it to the default test thing if it doesn't work out
@@ -142,11 +129,12 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 			console.log(getCommentUrl())
 			var ret  = [];
 			// console.log(body);
+			console.log(body);
 			bigCommentArrayThing = body[1].data.children;//comments - body[0] is post
 			console.log("---------");
 			for(var i = 0; i < bigCommentArrayThing.length; i++)
 				try{
-					var decrypted = JSON.parse(decrypt(bigCommentArrayThing[i].data.body));//set decrypted to a parsed json from the encrypted string
+					var decrypted = JSON.parse(encryption.decrypt(bigCommentArrayThing[i].data.body));//set decrypted to a parsed json from the encrypted string
 					JSON.parse(JSON.stringify(decrypted));//it'll throw an error if it's not a real JSON
 					decrypted._id = bigCommentArrayThing[i].data.id;
 					// var thing = JSON.parse(bigCommentArrayThing[i].data.body);//no idea why we haad to do this but it didn't work otherwise
@@ -265,7 +253,7 @@ function updateById (id, newval, callback, parentId) {//query = thing to find by
 
 	newval = JSON.stringify(newval);//so it can go in the post
 	var options = {
-		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(encrypt(newval)) + '&thing_id=t1_' + id,
+		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(encryption.encrypt(newval)) + '&thing_id=t1_' + id,
 		headers	: {
 				'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
 				'X-Modhash'	: modhash,
