@@ -2,20 +2,16 @@ var request	= require('request')
 	, argv	= require('yargs').argv
 	, repl = require('repl')
 	, crypto = require('crypto')
+	, config = require('./config/settings')
+	, utils = require('./app/utils')
 	, modhash
 	, cookie;
-
-subredditName = "Mongit";
-postId = "2izkvt";
-parentName = "t3_" + postId;//should be dynamic later, but this for now
-algo = "aes256";
-key = "RazzeFrazzle";//this shouldn't change after you first run it for obvious reasons
 
 var loggedIn = false;
 
 function getCommentUrl(pid){//parent id
-	pid = pid || postId;
-	return "http://reddit.com/r/" + subredditName + "/comments/" + postId + "/db.json";
+	pid = pid || config.postId;
+	return "http://reddit.com/r/" + config.subredditName + "/comments/" + config.postId + "/db.json";
 }
 
 function login (callback) {
@@ -61,7 +57,7 @@ function postComment (parentId, message, callback) {
 					'X-Modhash'	: modhash,
 					'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
 				},
-			method : 'POST'			
+			method : 'POST'
 		};
 	console.log("Making request");
 	request(options, function (err, res, body) {
@@ -88,32 +84,18 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 		return;//we don't want to add to DB
 	}
 	var orig = JSON.stringify(message);
-	message = encrypt(JSON.stringify(message));
+	message = utils.encrypt(JSON.stringify(message));
 
-	parentId = parentId || parentName;
+	parentId = parentId || config.parentName;
 
 	callback = callback || function(){
 		console.log("Message " + orig + " posted and encrypted successfully");
 	}
 	postComment(parentId, message, callback);
 }
-//we have to declare decipher and cipher here because the .final thing means we can't use it or some shit
-function decrypt(encrypted){
-	var decipher = crypto.createDecipher(algo, key);
-	return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
-}
-function encrypt(text){
-	if(typeof text == "object")
-		text = JSON.stringify(text);//has to be a string
-
-	cipher = crypto.createCipher(algo, key);
-	return cipher.update(text, 'utf8', 'hex') + cipher.final('hex');	
-}
-
-
 
 function find(query, callback, parentId){//find all stuff - callback takes one arg, an array of all the comments
-		parentId = parentId || parentName;//set it to the default test thing if it doesn't work out
+		parentId = parentId || config.parentName;//set it to the default test thing if it doesn't work out
 		callback = callback || function(ret){
 			console.log(ret);
 		};
@@ -132,7 +114,7 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 					'X-Modhash'	: modhash,
 					'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
 				},
-			method : 'GET'			
+			method : 'GET'
 		};
 	console.log("Making request");
 	request(options, function (err, res, body) {
@@ -147,16 +129,17 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 			console.log(getCommentUrl())
 			var ret  = [];
 			// console.log(body);
+			console.log(body);
 			bigCommentArrayThing = body[1].data.children;//comments - body[0] is post
 			console.log("---------");
 			for(var i = 0; i < bigCommentArrayThing.length; i++)
 				try{
-					var decrypted = JSON.parse(decrypt(bigCommentArrayThing[i].data.body));//set decrypted to a parsed json from the encrypted string
+					var decrypted = JSON.parse(utils.decrypt(bigCommentArrayThing[i].data.body));//set decrypted to a parsed json from the encrypted string
 					JSON.parse(JSON.stringify(decrypted));//it'll throw an error if it's not a real JSON
 					decrypted._id = bigCommentArrayThing[i].data.id;
 					// var thing = JSON.parse(bigCommentArrayThing[i].data.body);//no idea why we haad to do this but it didn't work otherwise
 					// thing._id = bigCommentArrayThing[i].data.id;
-					if(!compare(decrypted, query)){//if the thing popped off doesn't match the query...
+					if(!utils.compare(decrypted, query)){//if the thing popped off doesn't match the query...
 						continue;//keep going & don't add to array
 					}
 					// var arrAdd = bigCommentArrayThing[i].data.body;
@@ -165,8 +148,8 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 					// console.log(bigCommentArrayThing[i].data.id);
 					ret.push(decrypted);
 				} catch (e){}
-				
-			
+
+
 
 			callback(ret);
 		}
@@ -177,8 +160,8 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 
 
 function update (query, newval, callback, parentId) {//query = thing to find by, newval = what to set to - because we're lazy, we'll make it require an _id for now
-	
-	parentId = parentId || postId;
+
+	parentId = parentId || config.postId;
 	callback = callback || function(){
 		console.log("Updated successfuly!")
 	};
@@ -211,19 +194,19 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 	else if(!newval){
 		return console.log("You need something to update to!");
 	}
-	
+
 	var completed = 0;
 	var failed = 0;
 	find(query, function(data){//because it's find(query), only the data conforming to the query is returned and edited
-		
+
 		for(var i = 0; i < data.length; i++){
 			var edit = data[i];//row thing we're editing
 			var id = edit._id;
-			
+
 			for(var key in newval){//each of the keys we're updating
 				edit[key] = newval[key];//we'll add fancy mongo methods later
 			}
-			delete edit._id;//we don't want the id when we put it back in			
+			delete edit._id;//we don't want the id when we put it back in
 			updateById(id, edit, function(success){
 				completed++;
 				if(!success)//there was some problem
@@ -240,10 +223,10 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 
 
 function updateById (id, newval, callback, parentId) {//query = thing to find by, newval = what to set to - because we're lazy, we'll make it require an _id for now
-	
-	parentId = parentId || postId;
+
+	parentId = parentId || config.postId;
 	callback = callback || function(){
-		
+
 	};
 
 
@@ -265,18 +248,18 @@ function updateById (id, newval, callback, parentId) {//query = thing to find by
 	else if(!newval){
 		return console.log("You need something to update to!");
 	}
-	
+
 	delete newval._id;//make sure _id's aren't injected...
-	
+
 	newval = JSON.stringify(newval);//so it can go in the post
 	var options = {
-		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(encrypt(newval)) + '&thing_id=t1_' + id,
+		url	: 'https://en.reddit.com/api/editusertext?api_type=json&text=' + encodeURIComponent(utils.encrypt(newval)) + '&thing_id=t1_' + id,
 		headers	: {
 				'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
 				'X-Modhash'	: modhash,
 				'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
 			},
-		method : 'POST'			
+		method : 'POST'
 	};
 	console.log("Making request");
 	request(options, function (err, res, body) {
@@ -346,7 +329,7 @@ function removeById(id, callback){//only id based removing for now, so you'd nee
 				'X-Modhash'	: modhash,
 				'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
 			},
-		method : 'POST'			
+		method : 'POST'
 	};
 
 	request(options, function (err, res, body) {
@@ -360,20 +343,6 @@ function removeById(id, callback){//only id based removing for now, so you'd nee
 		}
 	});
 }
-
-
-
-function compare(object, query){//basically, identify whether or not a query matches the object to decide whether to return it
-
-	for(var i in query){
-		if(object[i] != query[i])
-			return false;
-	}
-	return true;
-
-}
-
-
 
 //2izkvt
 
