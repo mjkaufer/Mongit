@@ -344,6 +344,37 @@ function removeById(id, callback){//only id based removing for now, so you'd nee
 	});
 }
 
+function showdbs(callback){
+	callback = callback || function(){};
+
+	if(!loggedIn){//log in and try again
+		return login(function(){
+			find(query, callback, parentId);
+		});
+	}
+	var options = {
+		url	: "https://en.reddit.com/api/subreddits/mine/subscriber?t2_+sleepdepriveddev", // TODO:  eddit URL to be API url
+		headers	: {
+			'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
+			'X-Modhash'	: modhash,
+			'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
+		},
+		method : 'GET'
+	};
+	request(options, function(err, res, body){
+		if(err){
+			console.log(err.stack);
+			console.log("OOPS");
+			callback(false);
+			return;
+		}else{
+			console.log(body);
+			callback(true);
+		}
+	})
+
+}
+
 //2izkvt
 
 login(function(){
