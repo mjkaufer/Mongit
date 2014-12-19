@@ -5,7 +5,8 @@ var request	= require('request')
 	, config = require('./config/settings')
 	, utils = require('./app/utils')
 	, modhash
-	, cookie;
+	, cookie
+	, dbs = []; // adds dbs var as global array for use later
 
 var loggedIn = false;
 
@@ -344,6 +345,9 @@ function removeById(id, callback){//only id based removing for now, so you'd nee
 	});
 }
 
+/**
+* Displays DBs the user is an approved contributor to (private subreddits)
+*/
 function showdbs(callback){
 	callback = callback || function(){};
 
@@ -353,7 +357,7 @@ function showdbs(callback){
 		});
 	}
 	var options = {
-		url	: "https://en.reddit.com/api/subreddits/mine/subscriber?t2_+sleepdepriveddev", // TODO:  eddit URL to be API url
+		url	: "https://en.reddit.com/subreddits/mine/contributor.json",
 		headers	: {
 			'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
 			'X-Modhash'	: modhash,
@@ -364,12 +368,18 @@ function showdbs(callback){
 	request(options, function(err, res, body){
 		if(err){
 			console.log(err.stack);
-			console.log("OOPS");
+			console.log("Couldn't find dbs you are a contributor to");
 			callback(false);
 			return;
 		}else{
-			console.log(body);
+			body = JSON.parse(body); // the json isn't manuverable without this :(
+			dbs=[]; // sets to empty string
+			for(var i=0; i<body.data.children.length;i++){
+				dbs.push(body.data.children[i].data.display_name) // recreates array
+			}
+			console.log(dbs);
 			callback(true);
+			return;
 		}
 	})
 
@@ -394,6 +404,8 @@ login(function(){
 			if(cmd=="exit"){//quit repl if it's "exit"
 				process.exit();
 				console.log("Exited");
+			}else if(cmd=="dbs"){
+				showdbs();
 			}
 
 		eval(cmd);
