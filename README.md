@@ -26,6 +26,12 @@ Currently, all usage is done in the REPL, but you can easily see the methods bei
 
 `update(query, newvalue[, callback])` - Updates a query. `newvalue` is a JSON representing what fields will be set. Preexisting fields not in `newvalue` will remain unmodified. The callback takes an argument of a boolean lets you know whether or not the update went through successfully - `true` means it worked.
 
+`changeDb(db)` - Changes the DB you are connected to (subreddit).
+
+`changeCollection(collection)` - Changes the collection you are connected to (post).
+
+`dbs` - Shows the valid databases the user is an approved contributor to.
+
 ## How it works
 
 Each entry in the database is actually a comment on a subreddit post. The database is just a post in a subreddit. Using Reddit's API, you grab the comments, parse them as a JSON, and return them!
@@ -47,4 +53,4 @@ Mongit was created at HackRU Fall 2014, and won a bunch of stuff there.
 
 Make an issue or email me at `mjkaufer@gmail.com`. Happy hacking!
 
-This was all made at a hackathon, so naturally it's not the most refined thing. It's also a proof of concept. 
+This was all made at a hackathon, so naturally it's not the most refined thing. It's also a proof of concept.

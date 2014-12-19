@@ -5,7 +5,8 @@ var request	= require('request')
 	, config = require('./config/settings')
 	, utils = require('./app/utils')
 	, modhash
-	, cookie;
+	, cookie
+	, dbs = []; // adds dbs var as global array for use later
 
 var loggedIn = false;
 
@@ -86,7 +87,7 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 	var orig = JSON.stringify(message);
 	message = utils.encrypt(JSON.stringify(message));
 
-	parentId = parentId || config.parentName;
+	parentId =  parentId || config.parentName;
 
 	callback = callback || function(){
 		console.log("Message " + orig + " posted and encrypted successfully");
@@ -344,6 +345,57 @@ function removeById(id, callback){//only id based removing for now, so you'd nee
 	});
 }
 
+/**
+* Displays DBs the user is an approved contributor to (private subreddits)
+*/
+function showdbs(callback){
+	callback = callback || function(){};
+
+	if(!loggedIn){//log in and try again
+		return login(function(){
+			find(query, callback, parentId);
+		});
+	}
+	var options = {
+		url	: "https://en.reddit.com/subreddits/mine/contributor.json",
+		headers	: {
+			'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
+			'X-Modhash'	: modhash,
+			'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
+		},
+		method : 'GET'
+	};
+	request(options, function(err, res, body){
+		if(err){
+			console.log(err.stack);
+			console.log("Couldn't find dbs you are a contributor to");
+			callback(false);
+			return;
+		}else{
+			body = JSON.parse(body); // the json isn't manuverable without this :(
+			dbs=[]; // sets to empty string
+			for(var i=0; i<body.data.children.length;i++){
+				dbs.push(body.data.children[i].data.display_name) // recreates array
+			}
+			console.log(dbs);
+			callback(true);
+			return;
+		}
+	})
+
+}
+
+function changeDb(db){
+	(db? config.subredditName = db : console.log("invalied input"));
+	config.subredditName = "Mongoit";
+	return;
+}
+
+function changeCollection(collection){
+	(collection? config.postId = collection : console.log("invalid input"));
+	config.parentName = "t3_" + config.postId;
+	return;
+}
 //2izkvt
 
 login(function(){
@@ -363,6 +415,8 @@ login(function(){
 			if(cmd=="exit"){//quit repl if it's "exit"
 				process.exit();
 				console.log("Exited");
+			}else if(cmd=="dbs"){
+				showdbs();
 			}
 
 		eval(cmd);
