@@ -385,11 +385,13 @@ function showdbs(callback){
 
 }
 
-function changedb(db){
+function changeDb(db){
 	(db? config.subredditName = db : console.log("invalied input"));
+	config.subredditName = "Mongoit";
+	return;
 }
 
-function changeCollectiondb(collection){
+function changeCollection(collection){
 	(collection? config.postId = collection : console.log("invalid input"));
 	config.parentName = "t3_" + config.postId;
 	return;
