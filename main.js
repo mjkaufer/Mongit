@@ -87,7 +87,7 @@ function insert(message, callback, parentId){//callback takes one arg, returns t
 	var orig = JSON.stringify(message);
 	message = utils.encrypt(JSON.stringify(message));
 
-	parentId = parentId || config.parentName;
+	parentId =  parentId || config.parentName;
 
 	callback = callback || function(){
 		console.log("Message " + orig + " posted and encrypted successfully");
@@ -385,6 +385,15 @@ function showdbs(callback){
 
 }
 
+function changedb(db){
+	(db? config.subredditName = db : console.log("invalied input"));
+}
+
+function changeCollectiondb(collection){
+	(collection? config.postId = collection : console.log("invalid input"));
+	config.parentName = "t3_" + config.postId;
+	return;
+}
 //2izkvt
 
 login(function(){
