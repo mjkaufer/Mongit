@@ -375,7 +375,7 @@ function showdbs(){
 			for(var i=0; i<body.data.children.length;i++){
 				dbs.push(body.data.children[i].data.display_name) // recreates array
 			}
-			console.log("Databases",dbs);
+			console.log("Databases:",dbs);
 			return;
 		}
 	})
@@ -421,7 +421,7 @@ function showCollections(){
 			for(var i=0; i<body.data.children.length;i++){
 				collections.push(body.data.children[i].data.id);
 			}
-			console.log("Collections: ",collections);
+			console.log("Collections:",collections);
 			return;
 		}
 	})
