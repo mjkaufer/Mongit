@@ -125,12 +125,10 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 			callback(false);
 			return;
 		} else {//we're going to add all of the stuff into an array
-			// console.log(body);
 			body = JSON.parse(body);//have to jsonify it to access it
-			console.log(getCommentUrl())
+			// console.log(getCommentUrl())
 			var ret  = [];
-			// console.log(body);
-			console.log(body);
+
 			bigCommentArrayThing = body[1].data.children;//comments - body[0] is post
 			console.log("---------");
 			for(var i = 0; i < bigCommentArrayThing.length; i++)
