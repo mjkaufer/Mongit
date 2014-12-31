@@ -357,7 +357,7 @@ function showdbs(callback){
 		});
 	}
 	var options = {
-		url	: "https://en.reddit.com/subreddits/mine/contributor.json",
+		url	: "https://en.reddit.com/subreddits/mine/moderator.json",
 		headers	: {
 			'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
 			'X-Modhash'	: modhash,
