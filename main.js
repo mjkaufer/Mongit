@@ -130,7 +130,6 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 			var ret  = [];
 
 			bigCommentArrayThing = body[1].data.children;//comments - body[0] is post
-			console.log("---------");
 			for(var i = 0; i < bigCommentArrayThing.length; i++)
 				try{
 					var decrypted = JSON.parse(utils.decrypt(bigCommentArrayThing[i].data.body));//set decrypted to a parsed json from the encrypted string
