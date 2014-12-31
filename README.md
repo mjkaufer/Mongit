@@ -12,7 +12,7 @@ All entries are encrypted with `AES256` bit encryption!
 
 ## Installation & Running
 
-Install using `npm install`. You'll need a subreddit and a post in that subreddit. Substitute the subreddit name into the variable `subredditName` and the id of the post into the variable `postId`. Then, to run the console, type in `node main.js --user $redditUsername --pass $redditPassword`. You might want to make it so that your subreddit only allows moderators to post, so nobody can 'inject' data into your server.
+Install using `npm install`. Copy `config/settings.sample.js` as `config/settings.js`. You'll need a subreddit and a post in that subreddit. In `settings.js`, substitute the subreddit name into the variable `subredditName` and the id of the post into the variable `postId`. Set the `username` and `password` variables to your reddit account credentials. Then, to run the console, type in `node main.js`. You might want to make it so that your subreddit only allows moderators to post, so nobody can 'inject' data into your server.
 
 ## Usage
 

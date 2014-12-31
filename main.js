@@ -17,7 +17,7 @@ function getCommentUrl(pid){//parent id
 
 function login (callback) {
 	var options = {
-			url	: 'https://ssl.reddit.com/api/login?api_type=json&user=' + argv.user + '&passwd=' + argv.pass + '&rem=True',
+			url	: 'https://ssl.reddit.com/api/login?api_type=json&user=' + config.username + '&passwd=' + config.password + '&rem=True',
 			headers : {
 				'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
 			},
@@ -25,14 +25,14 @@ function login (callback) {
 	};
 	request(options, function (err, res, body) {
 		if (err) {
-			console.log('LOGIN ERROR:');
+			console.log('Login error:');
 			console.log(err);
 			return;
 		} else {
 			var parsedBody = JSON.parse(body);
 			modhash = parsedBody.json.data.modhash;
 			cookie	= parsedBody.json.data.cookie;
-			console.log("WE LOGGED IN");
+			console.log("Successfully logged in.");
 			loggedIn = true;
 			return callback();
 		}
@@ -64,7 +64,7 @@ function postComment (parentId, message, callback) {
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log(err.stack);
-			console.log('COMMENT POST ERROR ABOVE!');
+			console.log('Error while posting comment above.');
 			callback(false);
 			return;
 		} else {
@@ -121,7 +121,7 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log(err.stack);
-			console.log('COMMENT FIND ERROR ABOVE!');
+			console.log('Error while finding comment above.');
 			callback(false);
 			return;
 		} else {//we're going to add all of the stuff into an array
@@ -266,7 +266,7 @@ function updateById (id, newval, callback, parentId) {//query = thing to find by
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log(err.stack);
-			console.log('COMMENT POST ERROR ABOVE!');
+			console.log('Error while updating comment above.');
 			callback(false);
 			return;
 		} else {
@@ -336,7 +336,7 @@ function removeById(id, callback){//only id based removing for now, so you'd nee
 	request(options, function (err, res, body) {
 		if (err) {
 			console.log(err.stack);
-			console.log('COMMENT DELETE ERROR ABOVE!');
+			console.log('Error while removing comment above.');
 			callback(false);
 			return;
 		} else {
@@ -387,7 +387,7 @@ function showdbs(callback){
 
 function changeDb(db){
 	(db? config.subredditName = db : console.log("invalied input"));
-	config.subredditName = "Mongoit";
+	config.subredditName = "Mongit";
 	return;
 }
 
