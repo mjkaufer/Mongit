@@ -431,7 +431,7 @@ login(function(){
 	// 	insert(twitterInsert[i]);
 	// }
 	repl.start({
-		prompt: "Mongit> ",
+		prompt: config.subredditName + "> ",//unfortunately, this doesn't work dynamically, which really sucks
 		input: process.stdin,
 		output: process.stdout,
 		eval: function(cmd, context, filename, callback){
@@ -447,6 +447,8 @@ login(function(){
 					showCollections();
 				}else if(cmd.indexOf("use") == 0 && cmd.indexOf(" ") > -1){//if there's two arguments
 					changeDb(cmd.substring(cmd.indexOf(" ")));
+				}else if(cmd == "db"){//log current subreddit
+					console.log("Current database:",config.subredditName);
 				}else{
 					eval(cmd);
 				}

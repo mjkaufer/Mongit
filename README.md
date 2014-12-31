@@ -26,11 +26,15 @@ Currently, all usage is done in the REPL, but you can easily see the methods bei
 
 `update(query, newvalue[, callback])` - Updates a query. `newvalue` is a JSON representing what fields will be set. Preexisting fields not in `newvalue` will remain unmodified. The callback takes an argument of a boolean lets you know whether or not the update went through successfully - `true` means it worked.
 
-`changeDb(db)` - Changes the DB you are connected to (subreddit).
+`use <db>` - Changes the current database to `db` (subreddit).
+
+`show dbs` - Shows the databases the user is a moderator for.
+
+`show collections` - Shows the collections in the current database.
 
 `changeCollection(collection)` - Changes the collection you are connected to (post).
 
-`dbs` - Shows the valid databases the user is an approved contributor to.
+`db` - Prints current database name.
 
 ## How it works
 
