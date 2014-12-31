@@ -385,8 +385,9 @@ function showdbs(){
 }
 
 function changeDb(db){
-	(db? config.subredditName = db : console.log("Invalid input"));
-	config.subredditName = "Mongit";
+
+	config.subredditName = db.trim();
+	console.log("Changed to",config.subredditName);
 	return;
 }
 
@@ -445,10 +446,12 @@ login(function(){
 			if(cmd=="exit"){//quit repl if it's "exit"
 				process.exit();
 				console.log("Exited");
-			}else if(cmd == "show dbs"){
+			}else if(cmd == "show dbs"){//trying to get database management as close to MongoDB as possible - http://docs.mongodb.org/manual/reference/mongo-shell/
 				showdbs();
 			}else if(cmd == "show collections"){
 				showCollections();
+			}else if(cmd.indexOf("use") == 0 && cmd.indexOf(" ") > -1){//if there's two arguments
+				changeDb(cmd.substring(cmd.indexOf(" ")));
 			}else{
 				eval(cmd);
 			}
