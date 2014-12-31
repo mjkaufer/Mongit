@@ -1,6 +1,6 @@
 var config = {}
 
-config.subredditName = "Mongoit";
+config.subredditName = "Mongit";
 config.postId = "2izkvt";
 config.parentName = "t3_" + config.postId; // should be dynamic later
 config.algo = "aes256"
