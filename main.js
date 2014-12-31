@@ -233,7 +233,7 @@ function updateById (id, newval, callback, parentId) {//query = thing to find by
 
 	if(!loggedIn){//log in and try again
 		return login(function(){
-			update(query, newval, parentId, callback);
+			updateById(query, newval, parentId, callback);
 		});
 	}
 
@@ -315,7 +315,7 @@ function removeById(id, callback){//only id based removing for now, so you'd nee
 
 	if(!loggedIn){//log in and try again
 		return login(function(){
-			remove(query, callback);
+			removeById(query, callback);
 		});
 	}
 
@@ -348,12 +348,11 @@ function removeById(id, callback){//only id based removing for now, so you'd nee
 /**
 * Displays DBs the user is an approved contributor to (private subreddits)
 */
-function showdbs(callback){
-	callback = callback || function(){};
+function showdbs(){
 
 	if(!loggedIn){//log in and try again
 		return login(function(){
-			find(query, callback, parentId);
+			showdbs();
 		});
 	}
 	var options = {
@@ -377,7 +376,7 @@ function showdbs(callback){
 			for(var i=0; i<body.data.children.length;i++){
 				dbs.push(body.data.children[i].data.display_name) // recreates array
 			}
-			console.log(dbs);
+			console.log("Databases",dbs);
 			callback(true);
 			return;
 		}
@@ -396,6 +395,38 @@ function changeCollection(collection){
 	config.parentName = "t3_" + config.postId;
 	return;
 }
+
+function showCollections(){
+	if(!loggedIn){//log in and try again
+		return login(function(){
+			showCollections();
+		});
+	}
+	var options = {
+		url	: "https://api.reddit.com/r/" + config.subredditName + ".json",
+		headers	: {
+			'User-Agent' : 'Mongit/1.0.0 by mjkaufer',
+			'X-Modhash'	: modhash,
+			'Cookie' : 'reddit_session=' + encodeURIComponent(cookie)
+		},
+		method : 'GET'
+	};
+	request(options, function(err, res, body){
+		if(err){
+			console.log(err.stack);
+			console.log("Couldn't find any collections in /r/" + config.subredditName);
+			return;
+		}else{
+			body = JSON.parse(body);
+			collections=[];
+			for(var i=0; i<body.data.children.length;i++){
+				collections.push(body.data.children[i].data.id);
+			}
+			console.log("Collections: ",collections);
+			return;
+		}
+	})
+}
 //2izkvt
 
 login(function(){
@@ -411,15 +442,17 @@ login(function(){
 			cmd = cmd.substring(1,cmd.length - 2);
 
 
-
 			if(cmd=="exit"){//quit repl if it's "exit"
 				process.exit();
 				console.log("Exited");
-			}else if(cmd=="dbs"){
+			}else if(cmd == "show dbs"){
 				showdbs();
+			}else if(cmd == "show collections"){
+				showCollections();
+			}else{
+				eval(cmd);
 			}
-
-		eval(cmd);
+			
 
 		}
 	});
