@@ -386,13 +386,13 @@ function showdbs(callback){
 }
 
 function changeDb(db){
-	(db? config.subredditName = db : console.log("invalied input"));
+	(db? config.subredditName = db : console.log("Invalid input"));
 	config.subredditName = "Mongit";
 	return;
 }
 
 function changeCollection(collection){
-	(collection? config.postId = collection : console.log("invalid input"));
+	(collection? config.postId = collection : console.log("Invalid input"));
 	config.parentName = "t3_" + config.postId;
 	return;
 }
