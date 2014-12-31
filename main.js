@@ -368,7 +368,6 @@ function showdbs(){
 		if(err){
 			console.log(err.stack);
 			console.log("Couldn't find dbs you are a contributor to");
-			callback(false);
 			return;
 		}else{
 			body = JSON.parse(body); // the json isn't manuverable without this :(
@@ -377,7 +376,6 @@ function showdbs(){
 				dbs.push(body.data.children[i].data.display_name) // recreates array
 			}
 			console.log("Databases",dbs);
-			callback(true);
 			return;
 		}
 	})
@@ -442,19 +440,23 @@ login(function(){
 		eval: function(cmd, context, filename, callback){
 			cmd = cmd.substring(1,cmd.length - 2);
 
-
-			if(cmd=="exit"){//quit repl if it's "exit"
-				process.exit();
-				console.log("Exited");
-			}else if(cmd == "show dbs"){//trying to get database management as close to MongoDB as possible - http://docs.mongodb.org/manual/reference/mongo-shell/
-				showdbs();
-			}else if(cmd == "show collections"){
-				showCollections();
-			}else if(cmd.indexOf("use") == 0 && cmd.indexOf(" ") > -1){//if there's two arguments
-				changeDb(cmd.substring(cmd.indexOf(" ")));
-			}else{
-				eval(cmd);
+			try{
+				if(cmd=="exit"){//quit repl if it's "exit"
+					process.exit();
+					console.log("Exited");
+				}else if(cmd == "show dbs"){//trying to get database management as close to MongoDB as possible - http://docs.mongodb.org/manual/reference/mongo-shell/
+					showdbs();
+				}else if(cmd == "show collections"){
+					showCollections();
+				}else if(cmd.indexOf("use") == 0 && cmd.indexOf(" ") > -1){//if there's two arguments
+					changeDb(cmd.substring(cmd.indexOf(" ")));
+				}else{
+					eval(cmd);
+				}
+			} catch(e){
+				console.log(e);
 			}
+
 			
 
 		}
