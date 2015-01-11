@@ -129,24 +129,26 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 			// console.log(getCommentUrl())
 			var ret  = [];
 
-			bigCommentArrayThing = body[1].data.children;//comments - body[0] is post
-			for(var i = 0; i < bigCommentArrayThing.length; i++)
-				try{
-					var decrypted = JSON.parse(utils.decrypt(bigCommentArrayThing[i].data.body));//set decrypted to a parsed json from the encrypted string
-					JSON.parse(JSON.stringify(decrypted));//it'll throw an error if it's not a real JSON
-					decrypted._id = bigCommentArrayThing[i].data.id;
-					// var thing = JSON.parse(bigCommentArrayThing[i].data.body);//no idea why we haad to do this but it didn't work otherwise
-					// thing._id = bigCommentArrayThing[i].data.id;
-					if(!utils.compare(decrypted, query)){//if the thing popped off doesn't match the query...
-						continue;//keep going & don't add to array
-					}
-					// var arrAdd = bigCommentArrayThing[i].data.body;
-					// arrAdd["id"] = bigCommentArrayThing[i].data.id;//mongo-esque id maps
-					// console.log(arrAdd);
-					// console.log(bigCommentArrayThing[i].data.id);
-					ret.push(decrypted);
-				} catch (e){}
+			if(body[1] && body[1].data && body[1].data.children){//if the comments, etc. are defined
 
+				bigCommentArrayThing = body[1].data.children;//comments - body[0] is post
+				for(var i = 0; i < bigCommentArrayThing.length; i++)
+					try{
+						var decrypted = JSON.parse(utils.decrypt(bigCommentArrayThing[i].data.body));//set decrypted to a parsed json from the encrypted string
+						JSON.parse(JSON.stringify(decrypted));//it'll throw an error if it's not a real JSON
+						decrypted._id = bigCommentArrayThing[i].data.id;
+						// var thing = JSON.parse(bigCommentArrayThing[i].data.body);//no idea why we haad to do this but it didn't work otherwise
+						// thing._id = bigCommentArrayThing[i].data.id;
+						if(!utils.compare(decrypted, query)){//if the thing popped off doesn't match the query...
+							continue;//keep going & don't add to array
+						}
+						// var arrAdd = bigCommentArrayThing[i].data.body;
+						// arrAdd["id"] = bigCommentArrayThing[i].data.id;//mongo-esque id maps
+						// console.log(arrAdd);
+						// console.log(bigCommentArrayThing[i].data.id);
+						ret.push(decrypted);
+					} catch (e){}
+			}
 
 
 			callback(ret);
