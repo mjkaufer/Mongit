@@ -414,10 +414,12 @@ function showCollections(){
 			return;
 		}else{
 			body = JSON.parse(body);
-			collections=[];
+			collections="\n----\n";
 			for(var i=0; i<body.data.children.length;i++){
-				collections.push(body.data.children[i].data.id);
+				collections+=body.data.children[i].data.id + " (" + body.data.children[i].data.title + ")\n";
+				// console.log()
 			}
+			collections+="----"
 			console.log("Collections:",collections);
 			return;
 		}
