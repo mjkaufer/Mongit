@@ -15,9 +15,19 @@ exports.encrypt = function(text){
 exports.compare = function(object, query){//basically, identify whether or not a query matches the object to decide whether to return it
 
   for(var i in query){
-    if(object[i] != query[i])
+
+    if(object[i]){
+      if(JSON.stringify(object[i]) == JSON.stringify(query[i]))//this allows us to compare sub-children
+        continue;
+      if(object[i] != query[i])//this may be redundant, but it doesn't hurt to double check
+        return false;
+    } else {//naturally, if object doesn't have this key, it doesn't match the query
       return false;
     }
-    return true;
+
+
+  }
+
+  return true;
 
 }

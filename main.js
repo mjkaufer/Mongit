@@ -125,7 +125,13 @@ function find(query, callback, parentId){//find all stuff - callback takes one a
 			callback(false);
 			return;
 		} else {//we're going to add all of the stuff into an array
-			body = JSON.parse(body);//have to jsonify it to access it
+			try{
+				body = JSON.parse(body);//have to jsonify it to access it
+			} catch(e){
+				// console.log(e);
+				console.log("Reddit had trouble with the API call...");
+				// console.log(body);
+			}
 			// console.log(getCommentUrl())
 			var ret  = [];
 
