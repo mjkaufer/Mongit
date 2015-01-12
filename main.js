@@ -218,7 +218,7 @@ function update (query, newval, callback, parentId) {//query = thing to find by,
 				if(!success)//there was some problem
 					failed++;
 				if(completed==data.length){
-					console.log("Done - " + failed + " failed.");
+					console.log("Done - " + failed + " failed, " + completed + " completed.");
 				}
 			})
 			//now edit's keys are updated and we can update
@@ -308,7 +308,7 @@ function remove(query, callback){//only id based removing for now, so you'd need
 				if(!success)//there was some problem
 					failed++;
 				if(completed==data.length){
-					console.log("Done - " + failed + " failed.");
+					console.log("Done - " + failed + " failed, " + completed + " completed.");
 				}
 			})
 		}
